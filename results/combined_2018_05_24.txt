@@ -1,56 +1,3 @@
-## Overview
-The purpose of this test is to show significant differences between expected output of MongoDB and Cosmos DB. Speed is not a factor being evaluated, but creation/destruction times should be observed.
-
-## Start Mongo container...
-```bash
-docker run --name compete_mongo -d -p 27017:27017 mongo:latest
-```
-OR
-```bash
-docker start <container_id>
-```
-
-## Setup Virtual Env...
-```bash
-python3 -m venv env
-source env/bin/activate
-pip3 install pymongo
-deactivate
-```
-
-## Create Azure stack...
-
-[Get Terraform](https://www.terraform.io/downloads.html)
-
-[Get Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) and go through the agonizing UX of setting it up
-```bash
-cd terraform
-terraform init
-terraform plan
-terraform apply
-```
-
-## Create AWS stack...
-```bash
-aws cloudformation create-stack --stack-name DocumentDBComparison --template-body file://documentdb.yaml --parameters
-	ParameterKey=username,ParameterValue=<insertYourUsername>
-	ParameterKey=password,ParameterValue=<insertYourPassword>
-```
-
-```bash
-aws cloudformation describe-stacks --stack-name DocumentDBComparison
-```
-
-## Run Python...
-```bash
-source env/bin/activate
-python tests/combined_test.py
-deactivate
-```
-
-## Expected output for combined_test.py
-
-```
 Tests for array operators
 
 Equality operator
@@ -106,15 +53,3 @@ Results returned (Local):
 	 [{'_id': 1, 'a': {'b': 5}}, {'_id': 4, 'a': 'abc'}, {'_id': 2, 'a': 10}, {'_id': 3, 'a': [1, 2, 3]}]
 Results returned (Azure):
 	 [{'_id': 2, 'a': 10}, {'_id': 4, 'a': 'abc'}]
-```
-
-## Clean up
-
-```bash
-cd terraform
-terraform destroy
-```
-
-```bash
-aws cloudformation delete-stack --stack-name DocumentDBComparison
-```

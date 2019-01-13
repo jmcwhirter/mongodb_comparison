@@ -1,9 +1,13 @@
 import pymongo
+import os
 
+username = os.environ['AZURE_COSMOS_DB_USERNAME']
+password = os.environ['AZURE_COSMOS_DB_PASSWORD']
+host = os.environ['AZURE_COSMOS_DB_HOST']
 
 ##Create a MongoDB client
 #client = pymongo.MongoClient("mongodb://dbname:PRIMARY_KEY@dbname.documents.azure.com:port/?ssl=true&replicaSet=globaldb")
-client = pymongo.MongoClient("")
+client = pymongo.MongoClient("mongodb://{}:{}@{}:10255/?ssl=true&replicaSet=globaldb".format(username,password,host))
 
 ##Create a database
 db = client.test
