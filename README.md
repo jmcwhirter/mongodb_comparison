@@ -29,6 +29,17 @@ terraform plan
 terraform apply
 ~~~~
 
+## Create AWS stack...
+```bash
+aws cloudformation create-stack --stack-name DocumentDBComparison --template-body file://documentdb.yaml --parameters
+	ParameterKey=username,ParameterValue=<insertYourUsername>
+	ParameterKey=password,ParameterValue=<insertYourPassword>
+```
+
+```bash
+aws cloudformation describe-stacks --stack-name DocumentDBComparison
+```
+
 ## Run Python...
 ~~~~
 source env/bin/activate
@@ -94,4 +105,15 @@ Results returned (Local):
 	 [{'_id': 1, 'a': {'b': 5}}, {'_id': 4, 'a': 'abc'}, {'_id': 2, 'a': 10}, {'_id': 3, 'a': [1, 2, 3]}]
 Results returned (Azure):
 	 [{'_id': 2, 'a': 10}, {'_id': 4, 'a': 'abc'}]
-~~~~
+```
+
+## Clean up
+
+```bash
+cd terraform
+terraform destroy
+```
+
+```bash
+aws cloudformation delete-stack --stack-name DocumentDBComparison
+```
