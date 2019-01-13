@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  username:
+    Type: String
+  password:
+    Type: String
+Resources:
+  tunnel:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: "ami-0653e888ec96eab9b"
+      InstanceType: "t2.micro"
+      KeyName: "aws-us-east-2"
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: "true"
+          DeviceIndex: "0"
+          SubnetId: "subnet-8e1ee5e6"
+  cluster:
+    Type: "AWS::DocDB::DBCluster"
+    Properties:
+      BackupRetentionPeriod : 1
+      DBClusterIdentifier : "sample-cluster"
+      DBClusterParameterGroupName : "default.docdb3.6"
+      MasterUsername : !Ref username
+      MasterUserPassword : !Ref password
+      Port : "27017"
+      PreferredBackupWindow : "07:34-08:04"
+      PreferredMaintenanceWindow : "sat:04:51-sat:05:21"
+      StorageEncrypted : true
+      Tags:
+        -
+          Key: "demo"
+          Value: "true"
+  instance:
+    Type: "AWS::DocDB::DBInstance"
+    Properties:
+      AutoMinorVersionUpgrade: true
+      DBClusterIdentifier: !Ref cluster
+      DBInstanceClass: "db.r4.large"
+      DBInstanceIdentifier: "sample-instance"
+      Tags:
+        -
+          Key: "demo"
+          Value: "true"
